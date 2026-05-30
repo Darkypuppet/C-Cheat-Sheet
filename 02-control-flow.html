@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — Control Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#222831; --surface:#2c313a; --surface2:#393E46;
+      --border:rgba(148,137,121,.2); --warm1:#948979; --warm2:#F0E8DA;
+      --text:#F0E8DA; --muted:#948979;
+      --kw:#e07b54; --ty:#7fb3c8; --st:#7eab72; --cm:#5e6a78; --fn:#d4a96a; --op:#948979;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(34,40,49,0.93); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 54px;
+    }
+    .nav-brand { font-size: 1rem; font-weight: 800; color: var(--warm2); text-decoration: none; letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 4px; transition: all .2s; }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+
+    .hero { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+    .hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--warm1); background: rgba(148,137,121,.1); border: 1px solid rgba(148,137,121,.25); padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); font-size: 0.9rem; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2rem; }
+
+    section { opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.10s}
+    section:nth-child(3){animation-delay:.15s} section:nth-child(4){animation-delay:.20s}
+    section:nth-child(5){animation-delay:.25s} section:nth-child(6){animation-delay:.30s}
+    section:nth-child(7){animation-delay:.35s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .card:hover { border-color: rgba(148,137,121,.4); }
+    .card-header { padding: 0.6rem 1.1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .card-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warm1); flex-shrink: 0; }
+
+    .code-block { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; padding: 1rem 1.2rem; overflow-x: auto; white-space: pre; color: var(--warm2); }
+    .kw  { color: var(--kw);  font-weight: 600; }
+    .ty  { color: var(--ty); }
+    .st  { color: var(--st); }
+    .nm  { color: var(--fn); }
+    .cm  { color: var(--cm); font-style: italic; }
+    .fn  { color: var(--fn); }
+    .op  { color: var(--op); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 620px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .note { background: rgba(224,123,84,.07); border-left: 3px solid var(--kw); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #c47055; }
+    .tip  { background: rgba(126,171,114,.07); border-left: 3px solid var(--st); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #7eab72; }
+    .note code, .tip code { font-family: 'JetBrains Mono', monospace; font-size: 0.8em; background: rgba(0,0,0,.2); padding: 0.1em 0.35em; border-radius: 3px; }
+
+    /* quick ref table */
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .ref-table th { text-align: left; padding: 0.4rem 0.8rem; color: var(--muted); font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border); }
+    .ref-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid rgba(148,137,121,.08); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: rgba(148,137,121,.04); }
+    .ref-table .mono { font-family: 'JetBrains Mono', monospace; color: var(--kw); font-size: 0.8rem; font-weight: 600; }
+    .ref-table .desc { color: var(--muted); }
+    .ref-table .py   { color: var(--fn); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html">Keywords</a></li>
+    <li><a href="01-basics.html">Basics</a></li>
+    <li><a href="02-control-flow.html" class="active">Control Flow</a></li>
+    <li><a href="03-functions.html">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html">Pointers</a></li>
+    <li><a href="06-oop.html">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 02 / 07</span>
+  <h1><em>Control Flow</em></h1>
+  <p>Making decisions and repeating things — if, switch, for, while. Same ideas as Python, different syntax.</p>
+</div>
+
+<main>
+
+  <!-- IF / ELSE -->
+  <section id="if">
+    <div class="section-header">
+      <h2>if / else if / else</h2>
+      <span class="badge">Conditionals</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>syntax</div>
+      <div class="code-block"><span class="kw">if</span> <span class="op">(</span>condition<span class="op">) {</span>
+    <span class="cm">// runs if condition is true</span>
+<span class="op">}</span> <span class="kw">else if</span> <span class="op">(</span>other<span class="op">) {</span>
+    <span class="cm">// runs if first was false, this is true</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+    <span class="cm">// runs if everything above was false</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>example</div>
+      <div class="code-block"><span class="ty">int</span> score <span class="op">=</span> <span class="nm">72</span><span class="op">;</span>
+
+<span class="kw">if</span> <span class="op">(</span>score <span class="op">&gt;=</span> <span class="nm">90</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"A\n"</span><span class="op">;</span>
+<span class="op">}</span> <span class="kw">else if</span> <span class="op">(</span>score <span class="op">&gt;=</span> <span class="nm">70</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"B\n"</span><span class="op">;</span>       <span class="cm">// ← this one runs</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"C or below\n"</span><span class="op">;</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="tip">💡 Braces <code>{}</code> are optional for single-line bodies — but always use them. Skipping them causes classic bugs.</div>
+  </section>
+
+  <!-- TERNARY -->
+  <section id="ternary">
+    <div class="section-header">
+      <h2>Ternary Operator</h2>
+      <span class="badge">Inline if</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>condition ? value_if_true : value_if_false</div>
+      <div class="code-block"><span class="ty">int</span> age <span class="op">=</span> <span class="nm">20</span><span class="op">;</span>
+<span class="ty">string</span> status <span class="op">=</span> <span class="op">(</span>age <span class="op">&gt;=</span> <span class="nm">18</span><span class="op">)</span> <span class="op">?</span> <span class="st">"adult"</span> <span class="op">:</span> <span class="st">"minor"</span><span class="op">;</span>
+<span class="cm">// same as Python:  status = "adult" if age >= 18 else "minor"</span>
+
+cout <span class="op">&lt;&lt;</span> <span class="op">(</span>score <span class="op">&gt;</span> <span class="nm">50</span> <span class="op">?</span> <span class="st">"pass"</span> <span class="op">:</span> <span class="st">"fail"</span><span class="op">)</span> <span class="op">&lt;&lt;</span> <span class="st">"\n"</span><span class="op">;</span></div>
+    </div>
+  </section>
+
+  <!-- SWITCH -->
+  <section id="switch">
+    <div class="section-header">
+      <h2>switch</h2>
+      <span class="badge">Match exact values</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>syntax + example</div>
+      <div class="code-block"><span class="ty">int</span> day <span class="op">=</span> <span class="nm">3</span><span class="op">;</span>
+
+<span class="kw">switch</span> <span class="op">(</span>day<span class="op">) {</span>
+    <span class="kw">case</span> <span class="nm">1</span><span class="op">:</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Monday\n"</span><span class="op">;</span>
+        <span class="kw">break</span><span class="op">;</span>           <span class="cm">// ⚠ without break, falls into next case!</span>
+    <span class="kw">case</span> <span class="nm">2</span><span class="op">:</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Tuesday\n"</span><span class="op">;</span>
+        <span class="kw">break</span><span class="op">;</span>
+    <span class="kw">case</span> <span class="nm">3</span><span class="op">:</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Wednesday\n"</span><span class="op">;</span>  <span class="cm">// ← this runs</span>
+        <span class="kw">break</span><span class="op">;</span>
+    <span class="kw">default</span><span class="op">:</span>                  <span class="cm">// like else — catches anything else</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Other day\n"</span><span class="op">;</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="note">⚠ Always end each <code>case</code> with <code>break</code>. Without it, execution <strong>falls through</strong> into the next case — a very common bug. Python's <code>match</code> doesn't have this problem.</div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>multiple values → same case (intentional fall-through)</div>
+      <div class="code-block"><span class="kw">case</span> <span class="nm">6</span><span class="op">:</span>
+<span class="kw">case</span> <span class="nm">7</span><span class="op">:</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Weekend!\n"</span><span class="op">;</span>    <span class="cm">// runs for both 6 and 7</span>
+    <span class="kw">break</span><span class="op">;</span></div>
+    </div>
+  </section>
+
+  <!-- FOR LOOP -->
+  <section id="for">
+    <div class="section-header">
+      <h2>for loop</h2>
+      <span class="badge">Count-based</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>syntax — init ; condition ; increment</div>
+      <div class="code-block"><span class="kw">for</span> <span class="op">(</span><span class="ty">int</span> i <span class="op">=</span> <span class="nm">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="nm">5</span><span class="op">;</span> i<span class="op">++) {</span>
+    cout <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>          <span class="cm">// 0 1 2 3 4</span>
+<span class="op">}</span>
+
+<span class="cm">// Python equiv:  for i in range(5):</span>
+
+<span class="cm">// count down</span>
+<span class="kw">for</span> <span class="op">(</span><span class="ty">int</span> i <span class="op">=</span> <span class="nm">10</span><span class="op">;</span> i <span class="op">&gt;</span> <span class="nm">0</span><span class="op">;</span> i<span class="op">--) {</span>
+    cout <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>          <span class="cm">// 10 9 8 ... 1</span>
+<span class="op">}</span>
+
+<span class="cm">// step by 2</span>
+<span class="kw">for</span> <span class="op">(</span><span class="ty">int</span> i <span class="op">=</span> <span class="nm">0</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="nm">10</span><span class="op">;</span> i <span class="op">+=</span> <span class="nm">2</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>          <span class="cm">// 0 2 4 6 8 10</span>
+<span class="op">}</span></div>
+    </div>
+  </section>
+
+  <!-- RANGE-BASED FOR -->
+  <section id="range-for">
+    <div class="section-header">
+      <h2>Range-based for loop</h2>
+      <span class="badge">C++11 · Like Python's for x in list</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>for (type item : collection)</div>
+      <div class="code-block"><span class="ty">int</span> nums[] <span class="op">= {</span><span class="nm">10</span><span class="op">,</span> <span class="nm">20</span><span class="op">,</span> <span class="nm">30</span><span class="op">,</span> <span class="nm">40</span><span class="op">};</span>
+
+<span class="kw">for</span> <span class="op">(</span><span class="ty">int</span> n <span class="op">:</span> nums<span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> n <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>          <span class="cm">// 10 20 30 40</span>
+<span class="op">}</span>
+<span class="cm">// Python equiv:  for n in nums:</span>
+
+<span class="cm">// use auto to avoid writing the type</span>
+<span class="kw">for</span> <span class="op">(</span><span class="kw">auto</span> n <span class="op">:</span> nums<span class="op">) { </span><span class="cm">/* ... */</span> <span class="op">}</span>
+
+<span class="cm">// use const auto& for large objects (avoids copying)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="kw">const</span> <span class="kw">auto</span><span class="op">&amp;</span> n <span class="op">:</span> nums<span class="op">) { </span><span class="cm">/* ... */</span> <span class="op">}</span>
+
+<span class="cm">// works on strings too</span>
+<span class="ty">string</span> word <span class="op">=</span> <span class="st">"hello"</span><span class="op">;</span>
+<span class="kw">for</span> <span class="op">(</span><span class="ty">char</span> c <span class="op">:</span> word<span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> c <span class="op">&lt;&lt;</span> <span class="st">"-"</span><span class="op">;</span>          <span class="cm">// h-e-l-l-o-</span>
+<span class="op">}</span></div>
+    </div>
+  </section>
+
+  <!-- WHILE -->
+  <section id="while">
+    <div class="section-header">
+      <h2>while / do-while</h2>
+      <span class="badge">Condition-based</span>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>while — checks first</div>
+        <div class="code-block"><span class="ty">int</span> n <span class="op">=</span> <span class="nm">0</span><span class="op">;</span>
+
+<span class="kw">while</span> <span class="op">(</span>n <span class="op">&lt;</span> <span class="nm">5</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> n <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>
+    n<span class="op">++;</span>
+<span class="op">}</span>
+<span class="cm">// 0 1 2 3 4</span>
+
+<span class="cm">// if n were already 5,</span>
+<span class="cm">// body never runs</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>do-while — runs at least once</div>
+        <div class="code-block"><span class="ty">int</span> n <span class="op">=</span> <span class="nm">10</span><span class="op">;</span>
+
+<span class="kw">do</span> <span class="op">{</span>
+    cout <span class="op">&lt;&lt;</span> n <span class="op">&lt;&lt;</span> <span class="st">"\n"</span><span class="op">;</span>
+    n<span class="op">++;</span>
+<span class="op">}</span> <span class="kw">while</span> <span class="op">(</span>n <span class="op">&lt;</span> <span class="nm">5</span><span class="op">);</span>
+<span class="cm">// prints 10 once —</span>
+<span class="cm">// condition checked AFTER</span>
+<span class="cm">// body runs. Note the ; at end</span></div>
+      </div>
+    </div>
+    <div class="tip">💡 Use <code>while</code> when you don't know how many iterations. Use <code>for</code> when you do. <code>do-while</code> is rare — mostly for menus or input validation.</div>
+  </section>
+
+  <!-- BREAK / CONTINUE -->
+  <section id="break-continue">
+    <div class="section-header">
+      <h2>break &amp; continue</h2>
+      <span class="badge">Loop control</span>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <table class="ref-table">
+          <thead><tr><th>Keyword</th><th>What it does</th><th>Python equiv</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">break</td><td class="desc">Exits the loop immediately</td><td class="py">break</td></tr>
+            <tr><td class="mono">continue</td><td class="desc">Skips rest of this iteration, goes to next</td><td class="py">continue</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>example</div>
+      <div class="code-block"><span class="kw">for</span> <span class="op">(</span><span class="ty">int</span> i <span class="op">=</span> <span class="nm">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="nm">10</span><span class="op">;</span> i<span class="op">++) {</span>
+    <span class="kw">if</span> <span class="op">(</span>i <span class="op">==</span> <span class="nm">3</span><span class="op">)</span> <span class="kw">continue</span><span class="op">;</span>    <span class="cm">// skip 3</span>
+    <span class="kw">if</span> <span class="op">(</span>i <span class="op">==</span> <span class="nm">7</span><span class="op">)</span> <span class="kw">break</span><span class="op">;</span>       <span class="cm">// stop at 7</span>
+    cout <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">" "</span><span class="op">;</span>
+<span class="op">}</span>
+<span class="cm">// output: 0 1 2 4 5 6</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet — Page 02: Control Flow &nbsp;|&nbsp;
+  <a href="01-basics.html">← Basics</a> &nbsp;|&nbsp;
+  <a href="03-functions.html">Next: Functions →</a>
+</footer>
+
+</body>
+</html>
