@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — Keywords & Glossary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#222831; --surface:#2c313a; --surface2:#393E46;
+      --border:rgba(148,137,121,.2); --warm1:#948979; --warm2:#F0E8DA;
+      --text:#F0E8DA; --muted:#948979;
+      --kw:#e07b54; --ty:#7fb3c8; --st:#7eab72; --cm:#5e6a78; --fn:#d4a96a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(34,40,49,0.93); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 54px;
+    }
+    .nav-brand { font-size: 1rem; font-weight: 800; color: var(--warm2); text-decoration: none; letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 4px; transition: all .2s; }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+
+    .hero { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+    .hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--warm1); background: rgba(148,137,121,.1); border: 1px solid rgba(148,137,121,.25); padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); font-size: 0.9rem; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2rem; }
+
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.25rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+    /* GLOSSARY TABLE */
+    .gloss { width: 100%; border-collapse: collapse; }
+    .gloss tr { border-bottom: 1px solid rgba(148,137,121,.1); transition: background .15s; }
+    .gloss tr:last-child { border-bottom: none; }
+    .gloss tr:hover { background: rgba(148,137,121,.05); }
+    .gloss td { padding: 0.55rem 0.5rem; vertical-align: top; }
+    .gloss .term {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; font-weight: 600;
+      white-space: nowrap; padding-right: 1.5rem;
+      width: 1%; /* shrink to content */
+    }
+    .gloss .def { font-size: 0.85rem; color: var(--muted); }
+    .gloss .def strong { color: var(--warm2); font-weight: 600; }
+    .gloss .tag {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 0.1rem 0.45rem; border-radius: 4px; white-space: nowrap;
+      vertical-align: middle; margin-right: 0.4rem;
+    }
+    .tag-kw  { background: rgba(224,123,84,.15);  color: var(--kw); }
+    .tag-ty  { background: rgba(127,179,200,.15); color: var(--ty); }
+    .tag-op  { background: rgba(148,137,121,.15); color: var(--warm1); }
+    .tag-lib { background: rgba(126,171,114,.15); color: var(--st); }
+    .tag-con { background: rgba(212,169,106,.15); color: var(--fn); }
+
+    /* QUICK TYPES GRID */
+    .types-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; }
+    .type-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; }
+    .type-card .t-name { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: var(--ty); margin-bottom: 0.15rem; }
+    .type-card .t-desc { font-size: 0.75rem; color: var(--muted); }
+    .type-card .t-ex { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--fn); margin-top: 0.2rem; }
+
+    /* OPERATORS GRID */
+    .op-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem; }
+    .op-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; display: flex; gap: 0.75rem; align-items: flex-start; }
+    .op-sym { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--warm1); min-width: 28px; }
+    .op-info .op-name { font-size: 0.8rem; font-weight: 600; color: var(--warm2); }
+    .op-info .op-ex { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+    section { opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.10s}
+    section:nth-child(3){animation-delay:.15s} section:nth-child(4){animation-delay:.20s}
+    section:nth-child(5){animation-delay:.25s} section:nth-child(6){animation-delay:.30s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html" class="active">Keywords</a></li>
+    <li><a href="01-basics.html">Basics</a></li>
+    <li><a href="02-control-flow.html">Control Flow</a></li>
+    <li><a href="03-functions.html">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html">Pointers</a></li>
+    <li><a href="06-oop.html">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 00 / 07 — Glossary</span>
+  <h1>C++ <em>Keywords</em></h1>
+  <p>One-line definitions. Flip here when you remember the concept but forget the word.</p>
+</div>
+
+<main>
+
+  <!-- RESERVED KEYWORDS -->
+  <section>
+    <div class="section-header">
+      <h2>Reserved Keywords</h2>
+      <span class="badge">Can't use as variable names</span>
+    </div>
+    <table class="gloss">
+      <tbody>
+        <tr><td class="term" style="color:var(--kw)">int</td><td class="def">Whole number type. <strong>4 bytes.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">double</td><td class="def">Decimal number. <strong>8 bytes, 15 digits precision.</strong> Prefer over float.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">float</td><td class="def">Decimal number. <strong>4 bytes, 7 digits precision.</strong> Less accurate.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">char</td><td class="def">A single character. <strong>'A', '3', '!'</strong> — single quotes only.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">bool</td><td class="def">True or false. Written <strong>true / false</strong> (lowercase).</td></tr>
+        <tr><td class="term" style="color:var(--kw)">void</td><td class="def">Nothing / no type. Used for functions that <strong>return nothing.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">const</td><td class="def">Makes a variable <strong>immutable</strong> — can't be changed after set.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">auto</td><td class="def">Let the compiler <strong>figure out the type</strong> from the value.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">return</td><td class="def">Exits a function and <strong>sends a value back</strong> to the caller.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">if</td><td class="def">Runs code <strong>only if</strong> a condition is true.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">else</td><td class="def">Runs code if the <strong>if condition was false.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">else if</td><td class="def">Additional condition check <strong>after an if.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">switch</td><td class="def">Branches on an <strong>exact value</strong> — cleaner than many if/else.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">case</td><td class="def">A branch inside switch. Needs a <strong>break</strong> to stop falling through.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">break</td><td class="def"><strong>Exit</strong> a loop or switch immediately.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">continue</td><td class="def"><strong>Skip</strong> the rest of this loop iteration, go to next.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">for</td><td class="def">Loop with <strong>init, condition, increment</strong> in one line.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">while</td><td class="def">Loop that runs <strong>while</strong> a condition is true.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">do</td><td class="def">Like while but runs the body <strong>at least once</strong> first.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">class</td><td class="def">Blueprint for an object. Members are <strong>private by default.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">struct</td><td class="def">Like class but members are <strong>public by default.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">public</td><td class="def">Accessible <strong>from anywhere.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">private</td><td class="def">Accessible <strong>only inside the class.</strong></td></tr>
+        <tr><td class="term" style="color:var(--kw)">new</td><td class="def">Allocates memory on the <strong>heap.</strong> Returns a pointer.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">delete</td><td class="def">Frees memory allocated with <strong>new.</strong> Forgetting = memory leak.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">nullptr</td><td class="def">A pointer that points to <strong>nothing.</strong> Like Python's None.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">this</td><td class="def">Pointer to the <strong>current object</strong> inside a class method.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">static</td><td class="def">Shared across <strong>all instances</strong> of a class, or persists across calls.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">namespace</td><td class="def">Groups code under a <strong>named scope</strong> to avoid naming conflicts.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">using</td><td class="def">Imports a namespace. <strong>using namespace std</strong> is most common.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">template</td><td class="def">Write code that works with <strong>any type.</strong> Like Python generics.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">try / catch</td><td class="def">Handle <strong>errors/exceptions</strong> without crashing. Like Python's try/except.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">throw</td><td class="def"><strong>Raise</strong> an exception. Like Python's raise.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">inline</td><td class="def">Hint to compiler to <strong>paste the function body</strong> instead of calling it.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">virtual</td><td class="def">Allows a method to be <strong>overridden</strong> in a subclass.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">override</td><td class="def">Marks that you're <strong>intentionally overriding</strong> a virtual method.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">explicit</td><td class="def">Prevents <strong>accidental implicit conversions</strong> on constructors.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">sizeof</td><td class="def">Returns the <strong>size in bytes</strong> of a type or variable.</td></tr>
+        <tr><td class="term" style="color:var(--kw)">typedef</td><td class="def">Creates a <strong>type alias.</strong> Old style — prefer <strong>using</strong> in C++11+.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PREPROCESSOR -->
+  <section>
+    <div class="section-header">
+      <h2>Preprocessor Directives</h2>
+      <span class="badge">Run before compile</span>
+    </div>
+    <table class="gloss">
+      <tbody>
+        <tr><td class="term" style="color:var(--st)">#include</td><td class="def">Pastes another file's content here. Like Python's <strong>import.</strong></td></tr>
+        <tr><td class="term" style="color:var(--st)">#define</td><td class="def">Creates a <strong>macro</strong> — a text substitution before compile.</td></tr>
+        <tr><td class="term" style="color:var(--st)">#pragma once</td><td class="def">Tells compiler to <strong>include this file only once.</strong> Prevents duplicates.</td></tr>
+        <tr><td class="term" style="color:var(--st)">#ifdef / #endif</td><td class="def"><strong>Conditional compilation</strong> — include code only if something is defined.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- COMMON HEADERS -->
+  <section>
+    <div class="section-header">
+      <h2>Common Headers</h2>
+      <span class="badge">#include these</span>
+    </div>
+    <table class="gloss">
+      <tbody>
+        <tr><td class="term" style="color:var(--st)">&lt;iostream&gt;</td><td class="def"><strong>cout, cin, cerr.</strong> Input and output to terminal.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;string&gt;</td><td class="def"><strong>std::string.</strong> Text handling.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;vector&gt;</td><td class="def"><strong>std::vector.</strong> Dynamic array — like Python's list.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;map&gt;</td><td class="def"><strong>std::map.</strong> Key-value pairs — like Python's dict.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;set&gt;</td><td class="def"><strong>std::set.</strong> Unique values, auto-sorted.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;algorithm&gt;</td><td class="def"><strong>sort, find, min, max</strong> and more.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;cmath&gt;</td><td class="def"><strong>pow, sqrt, abs, floor, ceil, sin, cos…</strong></td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;cstdlib&gt;</td><td class="def"><strong>rand, srand, exit, atoi.</strong> General utilities.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;fstream&gt;</td><td class="def"><strong>ifstream, ofstream.</strong> Read and write files.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;sstream&gt;</td><td class="def"><strong>stringstream.</strong> Treat a string like a stream (parse/build strings).</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;limits&gt;</td><td class="def"><strong>numeric_limits.</strong> Max/min values for any type.</td></tr>
+        <tr><td class="term" style="color:var(--st)">&lt;memory&gt;</td><td class="def"><strong>unique_ptr, shared_ptr.</strong> Smart pointers — safer than raw new/delete.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- DATA TYPES QUICK REF -->
+  <section>
+    <div class="section-header">
+      <h2>Data Types at a Glance</h2>
+      <span class="badge">Size & example</span>
+    </div>
+    <div class="types-grid">
+      <div class="type-card"><div class="t-name">int</div><div class="t-desc">Whole · 4 bytes</div><div class="t-ex">int x = 42;</div></div>
+      <div class="type-card"><div class="t-name">long long</div><div class="t-desc">Big whole · 8 bytes</div><div class="t-ex">long long x = 9e18;</div></div>
+      <div class="type-card"><div class="t-name">double</div><div class="t-desc">Decimal · 8 bytes</div><div class="t-ex">double x = 3.14;</div></div>
+      <div class="type-card"><div class="t-name">float</div><div class="t-desc">Decimal · 4 bytes</div><div class="t-ex">float x = 3.14f;</div></div>
+      <div class="type-card"><div class="t-name">char</div><div class="t-desc">Character · 1 byte</div><div class="t-ex">char x = 'A';</div></div>
+      <div class="type-card"><div class="t-name">bool</div><div class="t-desc">True/false · 1 byte</div><div class="t-ex">bool x = true;</div></div>
+      <div class="type-card"><div class="t-name">string</div><div class="t-desc">Text · variable</div><div class="t-ex">string x = "hi";</div></div>
+      <div class="type-card"><div class="t-name">void</div><div class="t-desc">Nothing / no value</div><div class="t-ex">void myFunc() {}</div></div>
+    </div>
+  </section>
+
+  <!-- OPERATORS -->
+  <section>
+    <div class="section-header">
+      <h2>Operators at a Glance</h2>
+      <span class="badge">Quick reference</span>
+    </div>
+    <div class="op-grid">
+      <div class="op-card"><span class="op-sym">+  -  *  /</span><div class="op-info"><div class="op-name">Arithmetic</div><div class="op-ex">7 / 2 → 3 (int!)</div></div></div>
+      <div class="op-card"><span class="op-sym">%</span><div class="op-info"><div class="op-name">Modulo</div><div class="op-ex">7 % 3 → 1</div></div></div>
+      <div class="op-card"><span class="op-sym">++  --</span><div class="op-info"><div class="op-name">Increment / Decrement</div><div class="op-ex">x++ same as x += 1</div></div></div>
+      <div class="op-card"><span class="op-sym">==  !=</span><div class="op-info"><div class="op-name">Equal / Not equal</div><div class="op-ex">if (x == 5)</div></div></div>
+      <div class="op-card"><span class="op-sym">&lt;  &gt;  &lt;=  &gt;=</span><div class="op-info"><div class="op-name">Comparison</div><div class="op-ex">if (x &gt;= 10)</div></div></div>
+      <div class="op-card"><span class="op-sym">&amp;&amp;</span><div class="op-info"><div class="op-name">AND</div><div class="op-ex">Python: and</div></div></div>
+      <div class="op-card"><span class="op-sym">||</span><div class="op-info"><div class="op-name">OR</div><div class="op-ex">Python: or</div></div></div>
+      <div class="op-card"><span class="op-sym">!</span><div class="op-info"><div class="op-name">NOT</div><div class="op-ex">Python: not</div></div></div>
+      <div class="op-card"><span class="op-sym">+=  -=  *=</span><div class="op-info"><div class="op-name">Compound assign</div><div class="op-ex">x += 5 → x = x+5</div></div></div>
+      <div class="op-card"><span class="op-sym">*</span><div class="op-info"><div class="op-name">Dereference pointer</div><div class="op-ex">*ptr → value at ptr</div></div></div>
+      <div class="op-card"><span class="op-sym">&amp;</span><div class="op-info"><div class="op-name">Address-of</div><div class="op-ex">&amp;x → memory address</div></div></div>
+      <div class="op-card"><span class="op-sym">::</span><div class="op-info"><div class="op-name">Scope resolution</div><div class="op-ex">std::cout, MyClass::method</div></div></div>
+      <div class="op-card"><span class="op-sym">-&gt;</span><div class="op-info"><div class="op-name">Pointer member access</div><div class="op-ex">ptr-&gt;name</div></div></div>
+      <div class="op-card"><span class="op-sym">.</span><div class="op-info"><div class="op-name">Member access</div><div class="op-ex">obj.name</div></div></div>
+    </div>
+  </section>
+
+  <!-- TERMINOLOGY -->
+  <section>
+    <div class="section-header">
+      <h2>Concepts &amp; Terminology</h2>
+      <span class="badge">Things people say</span>
+    </div>
+    <table class="gloss">
+      <tbody>
+        <tr><td class="term" style="color:var(--fn)">compiled</td><td class="def">Source code is <strong>translated to machine code</strong> before running. Unlike Python.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">compiler</td><td class="def">The program that does the translation. Common ones: <strong>g++, clang++, MSVC.</strong></td></tr>
+        <tr><td class="term" style="color:var(--fn)">header file</td><td class="def">A <strong>.h or .hpp</strong> file — declares functions/classes for other files to use.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">source file</td><td class="def">A <strong>.cpp</strong> file — where the actual code lives.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">declaration</td><td class="def">Tells the compiler a name <strong>exists</strong> without defining what it does.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">definition</td><td class="def">The <strong>actual implementation</strong> — the full function or variable with its value.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">scope</td><td class="def">Where a variable is <strong>visible and usable.</strong> Defined by { } braces.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">stack</td><td class="def">Memory for <strong>local variables.</strong> Auto-managed, fast, limited size.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">heap</td><td class="def">Memory for <strong>dynamic allocation</strong> (new/delete). Manual, slower, larger.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">pointer</td><td class="def">A variable that stores a <strong>memory address</strong> instead of a value.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">reference</td><td class="def">An <strong>alias</strong> for an existing variable. Not a copy, same memory.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">memory leak</td><td class="def">Allocated memory that's <strong>never freed.</strong> Program slowly eats RAM.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">segfault</td><td class="def">Crash from <strong>accessing invalid memory.</strong> Common pointer mistake.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">overloading</td><td class="def">Multiple functions with the <strong>same name but different parameters.</strong></td></tr>
+        <tr><td class="term" style="color:var(--fn)">constructor</td><td class="def">Special method that runs <strong>when an object is created.</strong></td></tr>
+        <tr><td class="term" style="color:var(--fn)">destructor</td><td class="def">Special method that runs <strong>when an object is destroyed.</strong></td></tr>
+        <tr><td class="term" style="color:var(--fn)">inheritance</td><td class="def">A class <strong>reuses and extends</strong> another class. Like Python's class B(A).</td></tr>
+        <tr><td class="term" style="color:var(--fn)">polymorphism</td><td class="def">Same method name behaves <strong>differently per subclass.</strong></td></tr>
+        <tr><td class="term" style="color:var(--fn)">STL</td><td class="def"><strong>Standard Template Library.</strong> Built-in containers and algorithms.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">iterator</td><td class="def">An object that <strong>traverses a container</strong> element by element.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">compile error</td><td class="def">Code is <strong>wrong syntax</strong> — won't even build. Fix before running.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">runtime error</td><td class="def">Code <strong>builds fine but crashes</strong> while running.</td></tr>
+        <tr><td class="term" style="color:var(--fn)">undefined behaviour</td><td class="def">Code that's <strong>technically wrong</strong> but the compiler doesn't catch it. Dangerous.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet — Page 00: Keywords &amp; Glossary &nbsp;|&nbsp;
+  <a href="index.html">← Index</a> &nbsp;|&nbsp;
+  <a href="01-basics.html">Next: Basics →</a>
+</footer>
+
+</body>
+</html>
