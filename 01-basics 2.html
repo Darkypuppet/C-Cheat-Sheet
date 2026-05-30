@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — Basics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #222831;
+      --surface:  #2c313a;
+      --surface2: #393E46;
+      --border:   rgba(148,137,121,.2);
+      --warm1:    #948979;
+      --warm2:    #DFD0B8;
+      --text:     #DFD0B8;
+      --muted:    #948979;
+      --keyword:  #e08b6a;
+      --type:     #8fbcbb;
+      --string:   #a8c97f;
+      --number:   #d4a96a;
+      --comment:  #6e7a8a;
+      --fn:       #d4a96a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(34,40,49,0.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      height: 54px;
+    }
+    .nav-brand {
+      font-size: 1rem; font-weight: 800;
+      color: var(--warm2); text-decoration: none;
+      white-space: nowrap; letter-spacing: -0.3px;
+    }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.8rem; font-weight: 600;
+      padding: 0.25rem 0.65rem; border-radius: 4px;
+      transition: all .2s; letter-spacing: 0.2px;
+    }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+
+    /* HERO */
+    .hero { padding: 4rem 2rem 2.5rem; max-width: 900px; margin: 0 auto; }
+    .hero-tag {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--warm1); background: rgba(148,137,121,.1);
+      border: 1px solid rgba(148,137,121,.25);
+      padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.75rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); max-width: 580px; font-size: 0.95rem; }
+
+    /* LAYOUT */
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+    /* SECTION */
+    section { display: flex; flex-direction: column; gap: 1rem; opacity: 0; transform: translateY(14px); animation: fadeUp .45s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.12s}
+    section:nth-child(3){animation-delay:.19s} section:nth-child(4){animation-delay:.26s}
+    section:nth-child(5){animation-delay:.33s} section:nth-child(6){animation-delay:.40s}
+    section:nth-child(7){animation-delay:.47s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+    .section-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+    .section-header h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+    /* CARD */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .card:hover { border-color: rgba(148,137,121,.4); }
+    .card-header { padding: 0.65rem 1.1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .card-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warm1); }
+    .card-body { padding: 1.1rem; }
+
+    /* PROSE */
+    .prose { font-size: 0.9rem; color: var(--text); line-height: 1.8; }
+    .prose p+p { margin-top: 0.6rem; }
+    .prose strong { color: var(--warm2); font-weight: 700; }
+    .prose code { font-family: 'JetBrains Mono', monospace; font-size: 0.82em; background: var(--surface2); color: var(--type); padding: 0.1em 0.4em; border-radius: 4px; border: 1px solid var(--border); }
+    .note { background: rgba(212,169,106,.07); border-left: 3px solid var(--fn); border-radius: 0 6px 6px 0; padding: 0.7rem 1rem; font-size: 0.85rem; color: #c4a06a; }
+    .tip  { background: rgba(168,201,127,.07); border-left: 3px solid var(--string); border-radius: 0 6px 6px 0; padding: 0.7rem 1rem; font-size: 0.85rem; color: #8ab86a; }
+
+    /* CODE */
+    .code-block { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; padding: 1.1rem 1.2rem; overflow-x: auto; white-space: pre; tab-size: 4; color: var(--warm2); }
+    .kw  { color: var(--keyword); font-weight: 600; }
+    .ty  { color: var(--type); }
+    .st  { color: var(--string); }
+    .nm  { color: var(--number); }
+    .cm  { color: var(--comment); font-style: italic; }
+    .fn  { color: var(--fn); }
+    .op  { color: var(--muted); }
+    .hl  { background: rgba(148,137,121,.08); display: block; margin: 0 -1.2rem; padding: 0 1.2rem; border-left: 2px solid var(--warm1); }
+
+    /* GRID */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 620px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* TABLE */
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .ref-table th { text-align: left; padding: 0.5rem 0.8rem; color: var(--muted); font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border); }
+    .ref-table td { padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(148,137,121,.08); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: rgba(148,137,121,.04); }
+    .ref-table .mono { font-family: 'JetBrains Mono', monospace; color: var(--type); font-size: 0.8rem; }
+    .ref-table .desc { color: var(--muted); }
+    .ref-table .ex { color: var(--string); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+    .tag-py { color: var(--number); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html">Keywords</a></li>
+    <li><a href="01-basics.html" class="active">Basics</a></li>
+    <li><a href="02-control-flow.html">Control Flow</a></li>
+    <li><a href="03-functions.html">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html">Pointers</a></li>
+    <li><a href="06-oop.html">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 01 / 07</span>
+  <h1>The <em>Basics</em> of C++</h1>
+  <p>Program structure, variables, data types, input/output — everything you need before writing a single real program. Python comparisons included.</p>
+</div>
+
+<main>
+
+  <section id="hello">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">👋</div>
+      <h2>Your First C++ Program</h2>
+      <span class="badge">Hello World</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>main.cpp</div>
+      <div class="code-block"><span class="hl"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>          <span class="cm">// like Python's "import" — gives us cout/cin</span></span>
+<span class="kw">using namespace</span> <span class="ty">std</span><span class="op">;</span>             <span class="cm">// lets us write cout instead of std::cout</span>
+
+<span class="ty">int</span> <span class="fn">main</span><span class="op">() {</span>                     <span class="cm">// every C++ program starts here</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Hello, World!"</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>                    <span class="cm">// 0 = "everything went fine"</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>Key differences from Python</div>
+        <div class="card-body prose">
+          <p><strong>Curly braces <code>{}</code></strong> replace Python's indentation to define blocks.</p>
+          <p><strong>Semicolons <code>;</code></strong> end every statement — forgetting one is the #1 beginner error.</p>
+          <p><strong><code>main()</code></strong> is mandatory — the entry point of every C++ program.</p>
+          <p><strong><code>#include</code></strong> is like <code>import</code>, but for C++ libraries called <em>headers</em>.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>How to compile &amp; run</div>
+        <div class="card-body prose">
+          <p>C++ is <strong>compiled</strong>, not interpreted like Python. You turn source code into an executable first.</p>
+          <p style="margin-top:.8rem">Using <strong>g++</strong> (most common compiler):</p>
+          <div class="code-block" style="margin-top:.4rem; background:var(--surface2); border-radius:6px; font-size:.78rem">g++ main.cpp -o hello
+./hello</div>
+          <p style="margin-top:.5rem; font-size:.82rem; color:var(--muted)">Or use an online compiler like <strong>godbolt.org</strong> or <strong>repl.it</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="variables">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">📦</div>
+      <h2>Variables &amp; Declaration</h2>
+      <span class="badge">Typed & Explicit</span>
+    </div>
+    <div class="note">🐍 In Python you write <code>x = 5</code> and Python figures out the type. In C++ you <strong>must declare the type</strong> upfront: <code>int x = 5;</code></div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>Declaration syntax</div>
+      <div class="code-block"><span class="cm">// syntax: type name = value;</span>
+
+<span class="ty">int</span>    score <span class="op">=</span> <span class="nm">42</span><span class="op">;</span>          <span class="cm">// whole numbers</span>
+<span class="ty">double</span> price <span class="op">=</span> <span class="nm">9.99</span><span class="op">;</span>        <span class="cm">// decimal numbers (prefer over float)</span>
+<span class="ty">float</span>  temp  <span class="op">=</span> <span class="nm">36.6f</span><span class="op">;</span>       <span class="cm">// less precise decimal (note the f suffix)</span>
+<span class="ty">char</span>   grade <span class="op">=</span> <span class="st">'A'</span><span class="op">;</span>         <span class="cm">// single character — use single quotes!</span>
+<span class="ty">bool</span>   done  <span class="op">=</span> <span class="kw">false</span><span class="op">;</span>       <span class="cm">// true or false</span>
+<span class="ty">string</span> name  <span class="op">=</span> <span class="st">"Alice"</span><span class="op">;</span>     <span class="cm">// text — needs #include &lt;string&gt;</span>
+
+<span class="cm">// declare without value (contains garbage — be careful!)</span>
+<span class="ty">int</span> uninitialised<span class="op">;</span>           <span class="cm">// ⚠ avoid this unless you assign before reading</span>
+
+<span class="cm">// multiple variables of same type</span>
+<span class="ty">int</span> x <span class="op">=</span> <span class="nm">1</span><span class="op">,</span> y <span class="op">=</span> <span class="nm">2</span><span class="op">,</span> z <span class="op">=</span> <span class="nm">3</span><span class="op">;</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>auto — let the compiler infer the type (C++11+)</div>
+      <div class="code-block"><span class="kw">auto</span> score <span class="op">=</span> <span class="nm">42</span><span class="op">;</span>       <span class="cm">// compiler deduces: int</span>
+<span class="kw">auto</span> price <span class="op">=</span> <span class="nm">9.99</span><span class="op">;</span>     <span class="cm">// compiler deduces: double</span>
+<span class="kw">auto</span> name  <span class="op">=</span> <span class="st">"Alice"s</span><span class="op">;</span>  <span class="cm">// deduces: std::string (note the s suffix)</span>
+
+<span class="cm">// auto is handy but doesn't make C++ dynamically typed.</span>
+<span class="cm">// Once set, the type is FIXED — you can't reassign a different type.</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>const — like Python's constants (but enforced)</div>
+      <div class="code-block"><span class="kw">const</span> <span class="ty">double</span> PI <span class="op">=</span> <span class="nm">3.14159</span><span class="op">;</span>
+<span class="kw">const</span> <span class="ty">int</span> MAX_LIVES <span class="op">=</span> <span class="nm">3</span><span class="op">;</span>
+
+<span class="cm">// PI = 3.14;  ← compile error! const can't be changed</span></div>
+    </div>
+  </section>
+
+  <section id="types">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">🔢</div>
+      <h2>Data Types Reference</h2>
+      <span class="badge">Built-in Types</span>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <table class="ref-table">
+          <thead><tr><th>Type</th><th>Size</th><th>Range / Notes</th><th>Python equiv</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">int</td><td class="desc">4 bytes</td><td class="desc">−2.1B to +2.1B</td><td class="tag-py">int</td></tr>
+            <tr><td class="mono">long long</td><td class="desc">8 bytes</td><td class="desc">Much bigger integers</td><td class="tag-py">int</td></tr>
+            <tr><td class="mono">unsigned int</td><td class="desc">4 bytes</td><td class="desc">0 to ~4.2B (no negatives)</td><td class="tag-py">—</td></tr>
+            <tr><td class="mono">float</td><td class="desc">4 bytes</td><td class="desc">~7 decimal digits precision</td><td class="tag-py">float</td></tr>
+            <tr><td class="mono">double</td><td class="desc">8 bytes</td><td class="desc">~15 decimal digits precision ✓ preferred</td><td class="tag-py">float</td></tr>
+            <tr><td class="mono">char</td><td class="desc">1 byte</td><td class="desc">One character: 'A', '3', '!'</td><td class="tag-py">str (len 1)</td></tr>
+            <tr><td class="mono">bool</td><td class="desc">1 byte</td><td class="desc">true or false (lowercase!)</td><td class="tag-py">bool</td></tr>
+            <tr><td class="mono">string</td><td class="desc">varies</td><td class="desc">Needs #include &lt;string&gt;</td><td class="tag-py">str</td></tr>
+            <tr><td class="mono">void</td><td class="desc">—</td><td class="desc">"nothing" — for functions that return nothing</td><td class="tag-py">None</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tip">💡 <strong>Use <code>double</code> instead of <code>float</code></strong> unless on embedded hardware. Float's 7-digit precision causes subtle bugs.</div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>Type casting — converting between types</div>
+      <div class="code-block"><span class="ty">int</span>    a <span class="op">=</span> <span class="nm">7</span><span class="op">;</span>
+<span class="ty">double</span> b <span class="op">=</span> <span class="nm">2.5</span><span class="op">;</span>
+
+<span class="cm">// C-style cast (older, works but less safe)</span>
+<span class="ty">double</span> result <span class="op">=</span> (<span class="ty">double</span>)a <span class="op">/</span> <span class="nm">3</span><span class="op">;</span>      <span class="cm">// → 2.333...</span>
+
+<span class="cm">// C++ style cast (preferred)</span>
+<span class="ty">int</span> rounded <span class="op">=</span> <span class="kw">static_cast</span><span class="op">&lt;</span><span class="ty">int</span><span class="op">&gt;(</span>b<span class="op">);</span>   <span class="cm">// → 2  (truncates, doesn't round!)</span>
+
+<span class="cm">// ⚠ Integer division trap (same as Python 2!)</span>
+<span class="ty">int</span>    bad  <span class="op">=</span> <span class="nm">7</span> <span class="op">/</span> <span class="nm">2</span><span class="op">;</span>           <span class="cm">// → 3, NOT 3.5!</span>
+<span class="ty">double</span> good <span class="op">=</span> <span class="nm">7.0</span> <span class="op">/</span> <span class="nm">2</span><span class="op">;</span>         <span class="cm">// → 3.5 ✓</span></div>
+    </div>
+  </section>
+
+  <section id="operators">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">➕</div>
+      <h2>Operators</h2>
+      <span class="badge">Math & Logic</span>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>Arithmetic</div>
+        <div class="card-body" style="padding:0">
+          <table class="ref-table">
+            <thead><tr><th>Op</th><th>Meaning</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">+</td><td class="desc">Add</td><td class="ex">3 + 2 → 5</td></tr>
+              <tr><td class="mono">-</td><td class="desc">Subtract</td><td class="ex">5 - 3 → 2</td></tr>
+              <tr><td class="mono">*</td><td class="desc">Multiply</td><td class="ex">4 * 3 → 12</td></tr>
+              <tr><td class="mono">/</td><td class="desc">Divide</td><td class="ex">7 / 2 → 3 ⚠</td></tr>
+              <tr><td class="mono">%</td><td class="desc">Modulo</td><td class="ex">7 % 3 → 1</td></tr>
+              <tr><td class="mono">++</td><td class="desc">Increment</td><td class="ex">x++ or ++x</td></tr>
+              <tr><td class="mono">--</td><td class="desc">Decrement</td><td class="ex">x-- or --x</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>Comparison &amp; Logical</div>
+        <div class="card-body" style="padding:0">
+          <table class="ref-table">
+            <thead><tr><th>Op</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">==</td><td class="desc">Equal to</td></tr>
+              <tr><td class="mono">!=</td><td class="desc">Not equal</td></tr>
+              <tr><td class="mono">&lt; &gt; &lt;= &gt;=</td><td class="desc">Less/greater</td></tr>
+              <tr><td class="mono">&amp;&amp;</td><td class="desc">AND (Python: <code>and</code>)</td></tr>
+              <tr><td class="mono">||</td><td class="desc">OR (Python: <code>or</code>)</td></tr>
+              <tr><td class="mono">!</td><td class="desc">NOT (Python: <code>not</code>)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>Compound assignment — same as Python</div>
+      <div class="code-block"><span class="ty">int</span> x <span class="op">=</span> <span class="nm">10</span><span class="op">;</span>
+x <span class="op">+=</span> <span class="nm">5</span><span class="op">;</span>   <span class="cm">// x = x + 5  → 15</span>
+x <span class="op">-=</span> <span class="nm">3</span><span class="op">;</span>   <span class="cm">// x = x - 3  → 12</span>
+x <span class="op">*=</span> <span class="nm">2</span><span class="op">;</span>   <span class="cm">// x = x * 2  → 24</span>
+x <span class="op">/=</span> <span class="nm">4</span><span class="op">;</span>   <span class="cm">// x = x / 4  → 6</span>
+x <span class="op">%=</span> <span class="nm">4</span><span class="op">;</span>   <span class="cm">// x = x % 4  → 2</span>
+
+<span class="cm">// Note: C++ has NO ** operator. Use pow() from &lt;cmath&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;cmath&gt;</span>
+<span class="ty">double</span> p <span class="op">=</span> <span class="fn">pow</span><span class="op">(</span><span class="nm">2</span><span class="op">,</span> <span class="nm">8</span><span class="op">);</span>  <span class="cm">// → 256.0</span></div>
+    </div>
+  </section>
+
+  <section id="io">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">💬</div>
+      <h2>Input &amp; Output</h2>
+      <span class="badge">cin / cout</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>cout — printing to the terminal</div>
+      <div class="code-block"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> <span class="ty">std</span><span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span><span class="op">() {</span>
+    <span class="ty">int</span> age <span class="op">=</span> <span class="nm">25</span><span class="op">;</span>
+    <span class="ty">string</span> name <span class="op">=</span> <span class="st">"Alice"</span><span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Hello!\n"</span><span class="op">;</span>                    <span class="cm">// \n = newline</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Hello!"</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span>              <span class="cm">// endl = newline + flush buffer</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Name: "</span> <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">"\n"</span><span class="op">;</span>
+    cout <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">" is "</span> <span class="op">&lt;&lt;</span> age <span class="op">&lt;&lt;</span> <span class="st">" years old.\n"</span><span class="op">;</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>cin — reading user input</div>
+      <div class="code-block"><span class="ty">int</span> <span class="fn">main</span><span class="op">() {</span>
+    <span class="ty">int</span> age<span class="op">;</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Enter your name: "</span><span class="op">;</span>
+    cin  <span class="op">&gt;&gt;</span> name<span class="op">;</span>            <span class="cm">// reads ONE word (stops at space)</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Enter your age: "</span><span class="op">;</span>
+    cin  <span class="op">&gt;&gt;</span> age<span class="op">;</span>
+
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Hello, "</span> <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">"! You are "</span> <span class="op">&lt;&lt;</span> age <span class="op">&lt;&lt;</span> <span class="st">".\n"</span><span class="op">;</span>
+
+    <span class="cm">// To read a full line with spaces, use getline:</span>
+    <span class="ty">string</span> sentence<span class="op">;</span>
+    cin<span class="op">.</span><span class="fn">ignore</span><span class="op">();</span>                      <span class="cm">// clear leftover newline from cin</span>
+    <span class="fn">getline</span><span class="op">(</span>cin<span class="op">,</span> sentence<span class="op">);</span>             <span class="cm">// reads entire line including spaces</span>
+<span class="op">}</span></div>
+    </div>
+    <div class="note">⚠ <strong>Mixing <code>cin &gt;&gt;</code> and <code>getline()</code>?</strong> Always call <code>cin.ignore()</code> between them, or <code>getline</code> immediately reads an empty line. Classic beginner trap.</div>
+  </section>
+
+  <section id="strings-intro">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">🔤</div>
+      <h2>Strings — Quick Intro</h2>
+      <span class="badge">std::string</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>Common string operations</div>
+      <div class="code-block"><span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">using namespace</span> <span class="ty">std</span><span class="op">;</span>
+
+<span class="ty">string</span> a <span class="op">=</span> <span class="st">"Hello"</span><span class="op">;</span>
+<span class="ty">string</span> b <span class="op">=</span> <span class="st">" World"</span><span class="op">;</span>
+
+<span class="ty">string</span> c   <span class="op">=</span> a <span class="op">+</span> b<span class="op">;</span>             <span class="cm">// "Hello World" — concatenation with +</span>
+a <span class="op">+=</span> <span class="st">"!"</span><span class="op">;</span>                       <span class="cm">// "Hello!"</span>
+
+<span class="ty">int</span>  len <span class="op">=</span> a<span class="op">.</span><span class="fn">length</span><span class="op">();</span>           <span class="cm">// or a.size() — same thing</span>
+<span class="ty">char</span> ch  <span class="op">=</span> a[<span class="nm">0</span>]<span class="op">;</span>               <span class="cm">// 'H' — 0-indexed like Python</span>
+
+<span class="ty">string</span> sub <span class="op">=</span> a<span class="op">.</span><span class="fn">substr</span><span class="op">(</span><span class="nm">0</span><span class="op">,</span> <span class="nm">5</span><span class="op">);</span>    <span class="cm">// "Hello" — (start, LENGTH), not (start, end)!</span>
+
+<span class="ty">bool</span> empty <span class="op">=</span> a<span class="op">.</span><span class="fn">empty</span><span class="op">();</span>          <span class="cm">// true if ""</span>
+
+<span class="cm">// Find — returns string::npos if not found</span>
+<span class="ty">size_t</span> pos <span class="op">=</span> a<span class="op">.</span><span class="fn">find</span><span class="op">(</span><span class="st">"ell"</span><span class="op">);</span>     <span class="cm">// → 1</span>
+<span class="kw">if</span> <span class="op">(</span>pos <span class="op">!=</span> string<span class="op">::</span>npos<span class="op">)</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Found at "</span> <span class="op">&lt;&lt;</span> pos <span class="op">&lt;&lt;</span> <span class="st">"\n"</span><span class="op">;</span></div>
+    </div>
+    <div class="tip">💡 Strings are covered in depth on <strong>page 04</strong> (Arrays &amp; Strings). This is just enough to get started with I/O.</div>
+  </section>
+
+  <section id="skeleton">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(148,137,121,.12)">🦴</div>
+      <h2>Full Starter Template</h2>
+      <span class="badge">Copy & Paste</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>starter.cpp — use this for every new program</div>
+      <div class="code-block"><span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">using namespace</span> <span class="ty">std</span><span class="op">;</span>
+
+<span class="ty">int</span> <span class="fn">main</span><span class="op">() {</span>
+
+    <span class="cm">// ── your code goes here ──</span>
+
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+<span class="op">}</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet &mdash; Page 01: Basics &nbsp;|&nbsp;
+  <a href="index.html">← Index</a> &nbsp;|&nbsp;
+  <a href="02-control-flow.html">Next: Control Flow →</a>
+</footer>
+
+</body>
+</html>

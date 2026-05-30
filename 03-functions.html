@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — Functions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#222831; --surface:#2c313a; --surface2:#393E46;
+      --border:rgba(148,137,121,.2); --warm1:#948979; --warm2:#F0E8DA;
+      --text:#F0E8DA; --muted:#948979;
+      --kw:#e07b54; --ty:#7fb3c8; --st:#7eab72; --cm:#5e6a78; --fn:#d4a96a; --op:#948979;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(34,40,49,0.93); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 54px;
+    }
+    .nav-brand { font-size: 1rem; font-weight: 800; color: var(--warm2); text-decoration: none; letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 4px; transition: all .2s; }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+
+    .hero { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+    .hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--warm1); background: rgba(148,137,121,.1); border: 1px solid rgba(148,137,121,.25); padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); font-size: 0.9rem; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2rem; }
+
+    section { opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.10s}
+    section:nth-child(3){animation-delay:.15s} section:nth-child(4){animation-delay:.20s}
+    section:nth-child(5){animation-delay:.25s} section:nth-child(6){animation-delay:.30s}
+    section:nth-child(7){animation-delay:.35s} section:nth-child(8){animation-delay:.40s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .card:hover { border-color: rgba(148,137,121,.4); }
+    .card-header { padding: 0.6rem 1.1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .card-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warm1); flex-shrink: 0; }
+
+    .code-block { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; padding: 1rem 1.2rem; overflow-x: auto; white-space: pre; color: var(--warm2); }
+    .kw  { color: var(--kw);  font-weight: 600; }
+    .ty  { color: var(--ty); }
+    .st  { color: var(--st); }
+    .nm  { color: var(--fn); }
+    .cm  { color: var(--cm); font-style: italic; }
+    .fn  { color: var(--fn); }
+    .op  { color: var(--op); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 620px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .note { background: rgba(224,123,84,.07); border-left: 3px solid var(--kw); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #c47055; }
+    .tip  { background: rgba(126,171,114,.07); border-left: 3px solid var(--st); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #7eab72; }
+    .note code, .tip code { font-family: 'JetBrains Mono', monospace; font-size: 0.8em; background: rgba(0,0,0,.2); padding: 0.1em 0.35em; border-radius: 3px; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html">Keywords</a></li>
+    <li><a href="01-basics.html">Basics</a></li>
+    <li><a href="02-control-flow.html">Control Flow</a></li>
+    <li><a href="03-functions.html" class="active">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html">Pointers</a></li>
+    <li><a href="06-oop.html">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 03 / 07</span>
+  <h1><em>Functions</em></h1>
+  <p>Reusable blocks of code. Same concept as Python — different syntax, stricter types.</p>
+</div>
+
+<main>
+
+  <!-- ANATOMY -->
+  <section id="anatomy">
+    <div class="section-header">
+      <h2>Anatomy of a Function</h2>
+      <span class="badge">Structure</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>return_type name(parameters) { body }</div>
+      <div class="code-block"><span class="cm">// return_type  name  ( parameters )  { body }</span>
+<span class="ty">int</span>          <span class="fn">add</span>  <span class="op">(</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">) {</span>
+    <span class="kw">return</span> a <span class="op">+</span> b<span class="op">;</span>
+<span class="op">}</span>
+
+<span class="cm">// Python equiv:</span>
+<span class="cm">// def add(a, b):</span>
+<span class="cm">//     return a + b</span>
+
+<span class="cm">// calling it:</span>
+<span class="ty">int</span> result <span class="op">=</span> <span class="fn">add</span><span class="op">(</span><span class="nm">3</span><span class="op">,</span> <span class="nm">4</span><span class="op">);</span>   <span class="cm">// result = 7</span></div>
+    </div>
+    <div class="note">⚠ In C++, functions must be <code>declared before they are used</code>. Either define them above <code>main()</code>, or use a forward declaration.</div>
+  </section>
+
+  <!-- VOID -->
+  <section id="void">
+    <div class="section-header">
+      <h2>void — no return value</h2>
+      <span class="badge">Like Python with no return</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>use void when the function just does something</div>
+      <div class="code-block"><span class="ty">void</span> <span class="fn">greet</span><span class="op">(</span><span class="ty">string</span> name<span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> <span class="st">"Hello, "</span> <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">"!\n"</span><span class="op">;</span>
+    <span class="cm">// no return needed</span>
+<span class="op">}</span>
+
+<span class="fn">greet</span><span class="op">(</span><span class="st">"Alice"</span><span class="op">);</span>   <span class="cm">// Hello, Alice!</span></div>
+    </div>
+  </section>
+
+  <!-- PARAMETERS -->
+  <section id="params">
+    <div class="section-header">
+      <h2>Parameter Passing</h2>
+      <span class="badge">By value · By reference</span>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>by value — gets a copy</div>
+        <div class="code-block"><span class="ty">void</span> <span class="fn">doubleIt</span><span class="op">(</span><span class="ty">int</span> n<span class="op">) {</span>
+    n <span class="op">*=</span> <span class="nm">2</span><span class="op">;</span>         <span class="cm">// only changes copy</span>
+<span class="op">}</span>
+
+<span class="ty">int</span> x <span class="op">=</span> <span class="nm">5</span><span class="op">;</span>
+<span class="fn">doubleIt</span><span class="op">(</span>x<span class="op">);</span>
+cout <span class="op">&lt;&lt;</span> x<span class="op">;</span>        <span class="cm">// still 5!</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>by reference — modifies original</div>
+        <div class="code-block"><span class="ty">void</span> <span class="fn">doubleIt</span><span class="op">(</span><span class="ty">int</span><span class="op">&amp;</span> n<span class="op">) {</span>  <span class="cm">// note &amp;</span>
+    n <span class="op">*=</span> <span class="nm">2</span><span class="op">;</span>
+<span class="op">}</span>
+
+<span class="ty">int</span> x <span class="op">=</span> <span class="nm">5</span><span class="op">;</span>
+<span class="fn">doubleIt</span><span class="op">(</span>x<span class="op">);</span>
+cout <span class="op">&lt;&lt;</span> x<span class="op">;</span>        <span class="cm">// 10 ✓</span></div>
+      </div>
+    </div>
+    <div class="tip">💡 Pass large objects (strings, vectors) by <code>const&</code> to avoid copying without allowing modification: <code>void print(const string&amp; s)</code></div>
+  </section>
+
+  <!-- DEFAULT ARGS -->
+  <section id="defaults">
+    <div class="section-header">
+      <h2>Default Arguments</h2>
+      <span class="badge">Like Python defaults</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>set defaults in the declaration</div>
+      <div class="code-block"><span class="ty">void</span> <span class="fn">greet</span><span class="op">(</span><span class="ty">string</span> name<span class="op">,</span> <span class="ty">string</span> msg <span class="op">=</span> <span class="st">"Hello"</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt;</span> msg <span class="op">&lt;&lt;</span> <span class="st">" "</span> <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">"\n"</span><span class="op">;</span>
+<span class="op">}</span>
+
+<span class="fn">greet</span><span class="op">(</span><span class="st">"Alice"</span><span class="op">);</span>            <span class="cm">// Hello Alice</span>
+<span class="fn">greet</span><span class="op">(</span><span class="st">"Alice"</span><span class="op">,</span> <span class="st">"Hi"</span><span class="op">);</span>      <span class="cm">// Hi Alice</span>
+
+<span class="cm">// ⚠ defaults must be at the END of the parameter list</span></div>
+    </div>
+  </section>
+
+  <!-- OVERLOADING -->
+  <section id="overload">
+    <div class="section-header">
+      <h2>Function Overloading</h2>
+      <span class="badge">No Python equiv</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>same name, different parameter types</div>
+      <div class="code-block"><span class="ty">int</span>    <span class="fn">add</span><span class="op">(</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">)       {</span> <span class="kw">return</span> a <span class="op">+</span> b<span class="op">; }</span>
+<span class="ty">double</span> <span class="fn">add</span><span class="op">(</span><span class="ty">double</span> a<span class="op">,</span> <span class="ty">double</span> b<span class="op">) {</span> <span class="kw">return</span> a <span class="op">+</span> b<span class="op">; }</span>
+<span class="ty">string</span> <span class="fn">add</span><span class="op">(</span><span class="ty">string</span> a<span class="op">,</span> <span class="ty">string</span> b<span class="op">) {</span> <span class="kw">return</span> a <span class="op">+</span> b<span class="op">; }</span>
+
+<span class="fn">add</span><span class="op">(</span><span class="nm">1</span><span class="op">,</span> <span class="nm">2</span><span class="op">);</span>              <span class="cm">// calls int version → 3</span>
+<span class="fn">add</span><span class="op">(</span><span class="nm">1.5</span><span class="op">,</span> <span class="nm">2.5</span><span class="op">);</span>         <span class="cm">// calls double version → 4.0</span>
+<span class="fn">add</span><span class="op">(</span><span class="st">"Hi"</span><span class="op">,</span> <span class="st">"!"</span><span class="op">);</span>       <span class="cm">// calls string version → "Hi!"</span>
+
+<span class="cm">// compiler picks the right one based on argument types</span></div>
+    </div>
+  </section>
+
+  <!-- FORWARD DECLARATION -->
+  <section id="forward">
+    <div class="section-header">
+      <h2>Forward Declaration</h2>
+      <span class="badge">Use before defining</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>declare the signature at the top, define later</div>
+      <div class="code-block"><span class="ty">int</span> <span class="fn">add</span><span class="op">(</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">);</span>      <span class="cm">// ← forward declaration (just the signature)</span>
+
+<span class="ty">int</span> <span class="fn">main</span><span class="op">() {</span>
+    cout <span class="op">&lt;&lt;</span> <span class="fn">add</span><span class="op">(</span><span class="nm">2</span><span class="op">,</span> <span class="nm">3</span><span class="op">);</span>        <span class="cm">// works even though add is defined below</span>
+    <span class="kw">return</span> <span class="nm">0</span><span class="op">;</span>
+<span class="op">}</span>
+
+<span class="ty">int</span> <span class="fn">add</span><span class="op">(</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">) {</span>      <span class="cm">// ← actual definition</span>
+    <span class="kw">return</span> a <span class="op">+</span> b<span class="op">;</span>
+<span class="op">}</span></div>
+    </div>
+  </section>
+
+  <!-- LAMBDA -->
+  <section id="lambda">
+    <div class="section-header">
+      <h2>Lambda Functions</h2>
+      <span class="badge">C++11 · Anonymous functions</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>[capture](params) { body }</div>
+      <div class="code-block"><span class="cm">// Python equiv:  lambda a, b: a + b</span>
+<span class="kw">auto</span> add <span class="op">= [](</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">) {</span> <span class="kw">return</span> a <span class="op">+</span> b<span class="op">; };</span>
+cout <span class="op">&lt;&lt;</span> <span class="fn">add</span><span class="op">(</span><span class="nm">3</span><span class="op">,</span> <span class="nm">4</span><span class="op">);</span>   <span class="cm">// 7</span>
+
+<span class="cm">// capture outside variables with [&] or [=]</span>
+<span class="ty">int</span> factor <span class="op">=</span> <span class="nm">10</span><span class="op">;</span>
+<span class="kw">auto</span> multiply <span class="op">= [&](</span><span class="ty">int</span> x<span class="op">) {</span> <span class="kw">return</span> x <span class="op">*</span> factor<span class="op">; };</span>
+cout <span class="op">&lt;&lt;</span> <span class="fn">multiply</span><span class="op">(</span><span class="nm">5</span><span class="op">);</span>   <span class="cm">// 50</span>
+
+<span class="cm">// common use — inline with sort()</span>
+<span class="fn">sort</span><span class="op">(</span>v<span class="op">.</span><span class="fn">begin</span><span class="op">(),</span> v<span class="op">.</span><span class="fn">end</span><span class="op">(), [](</span><span class="ty">int</span> a<span class="op">,</span> <span class="ty">int</span> b<span class="op">) {</span> <span class="kw">return</span> a <span class="op">&gt;</span> b<span class="op">; });</span>  <span class="cm">// sort descending</span></div>
+    </div>
+    <div class="tip">💡 <code>[]</code> = capture nothing &nbsp;·&nbsp; <code>[&]</code> = capture all by reference &nbsp;·&nbsp; <code>[=]</code> = capture all by value</div>
+  </section>
+
+  <!-- RECURSION -->
+  <section id="recursion">
+    <div class="section-header">
+      <h2>Recursion</h2>
+      <span class="badge">Same as Python</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>function that calls itself</div>
+      <div class="code-block"><span class="ty">int</span> <span class="fn">factorial</span><span class="op">(</span><span class="ty">int</span> n<span class="op">) {</span>
+    <span class="kw">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="nm">1</span><span class="op">)</span> <span class="kw">return</span> <span class="nm">1</span><span class="op">;</span>         <span class="cm">// base case</span>
+    <span class="kw">return</span> n <span class="op">*</span> <span class="fn">factorial</span><span class="op">(</span>n <span class="op">-</span> <span class="nm">1</span><span class="op">);</span>    <span class="cm">// recursive call</span>
+<span class="op">}</span>
+
+cout <span class="op">&lt;&lt;</span> <span class="fn">factorial</span><span class="op">(</span><span class="nm">5</span><span class="op">);</span>   <span class="cm">// 120</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet — Page 03: Functions &nbsp;|&nbsp;
+  <a href="02-control-flow.html">← Control Flow</a> &nbsp;|&nbsp;
+  <a href="04-arrays-strings.html">Next: Arrays &amp; Strings →</a>
+</footer>
+
+</body>
+</html>
