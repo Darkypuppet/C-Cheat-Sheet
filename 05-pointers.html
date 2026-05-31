@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — Pointers & References</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#222831; --surface:#2c313a; --surface2:#393E46;
+      --border:rgba(148,137,121,.2); --warm1:#948979; --warm2:#F0E8DA;
+      --text:#F0E8DA; --muted:#948979;
+      --kw:#e07b54; --ty:#7fb3c8; --st:#7eab72; --cm:#5e6a78; --fn:#d4a96a; --op:#948979;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(34,40,49,0.93); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 54px;
+    }
+    .nav-brand { font-size: 1rem; font-weight: 800; color: var(--warm2); text-decoration: none; letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 4px; transition: all .2s; }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+
+    .hero { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+    .hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--warm1); background: rgba(148,137,121,.1); border: 1px solid rgba(148,137,121,.25); padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); font-size: 0.9rem; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2rem; }
+
+    section { opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.10s}
+    section:nth-child(3){animation-delay:.15s} section:nth-child(4){animation-delay:.20s}
+    section:nth-child(5){animation-delay:.25s} section:nth-child(6){animation-delay:.30s}
+    section:nth-child(7){animation-delay:.35s} section:nth-child(8){animation-delay:.40s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .card:hover { border-color: rgba(148,137,121,.4); }
+    .card-header { padding: 0.6rem 1.1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .card-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warm1); flex-shrink: 0; }
+
+    .code-block { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; padding: 1rem 1.2rem; overflow-x: auto; white-space: pre; color: var(--warm2); }
+    .kw  { color: var(--kw);  font-weight: 600; }
+    .ty  { color: var(--ty); }
+    .st  { color: var(--st); }
+    .nm  { color: var(--fn); }
+    .cm  { color: var(--cm); font-style: italic; }
+    .fn  { color: var(--fn); }
+    .op  { color: var(--op); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .note { background: rgba(224,123,84,.07); border-left: 3px solid var(--kw); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #c47055; }
+    .tip  { background: rgba(126,171,114,.07); border-left: 3px solid var(--st); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #7eab72; }
+    .note code, .tip code { font-family: 'JetBrains Mono', monospace; font-size: 0.8em; background: rgba(0,0,0,.2); padding: 0.1em 0.35em; border-radius: 3px; }
+
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .ref-table th { text-align: left; padding: 0.4rem 0.8rem; color: var(--muted); font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border); }
+    .ref-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid rgba(148,137,121,.08); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: rgba(148,137,121,.04); }
+    .ref-table .mono { font-family: 'JetBrains Mono', monospace; color: var(--ty); font-size: 0.8rem; white-space: nowrap; }
+    .ref-table .desc { color: var(--muted); }
+    .ref-table .ex   { font-family: 'JetBrains Mono', monospace; color: var(--fn); font-size: 0.78rem; }
+
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html">Keywords</a></li>
+    <li><a href="01-basics.html">Basics</a></li>
+    <li><a href="02-control-flow.html">Control Flow</a></li>
+    <li><a href="03-functions.html">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html" class="active">Pointers</a></li>
+    <li><a href="06-oop.html">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 05 / 07</span>
+  <h1><em>Pointers</em> &amp; References</h1>
+  <p>The most C++-specific topic. No direct Python equivalent — but once it clicks, everything else makes sense.</p>
+</div>
+
+<main>
+
+  <!-- MEMORY BASICS -->
+  <section id="memory">
+    <div class="section-header">
+      <h2>The Core Idea</h2>
+      <span class="badge">Memory addresses</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>every variable lives at a memory address</div>
+      <div class="code-block"><span class="ty">int</span> x <span class="op">=</span> <span class="nm">42</span><span class="op">;</span>
+
+cout <span class="op">&lt;&lt;</span> x<span class="op">;</span>    <span class="cm">// → 42          (the value)</span>
+cout <span class="op">&lt;&lt; &amp;</span>x<span class="op">;</span>   <span class="cm">// → 0x61ff08   (the address — where it lives in RAM)</span>
+
+<span class="cm">// & here means "address of" — not to be confused with reference &</span></div>
+    </div>
+    <div class="tip">💡 Think of memory as a street. Every variable is a house. The <strong>value</strong> is what's inside the house. The <strong>address</strong> is the street number. A pointer is a piece of paper with that street number written on it.</div>
+  </section>
+
+  <!-- POINTERS -->
+  <section id="pointers">
+    <div class="section-header">
+      <h2>Pointers</h2>
+      <span class="badge">type* · stores an address</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>declare · assign · dereference</div>
+      <div class="code-block"><span class="ty">int</span>  x   <span class="op">=</span> <span class="nm">42</span><span class="op">;</span>
+<span class="ty">int</span><span class="op">*</span> ptr <span class="op">= &amp;</span>x<span class="op">;</span>      <span class="cm">// ptr holds the ADDRESS of x</span>
+
+cout <span class="op">&lt;&lt;</span> ptr<span class="op">;</span>        <span class="cm">// → 0x61ff08  (the address)</span>
+cout <span class="op">&lt;&lt; *</span>ptr<span class="op">;</span>       <span class="cm">// → 42        (the value AT that address — dereference)</span>
+
+<span class="op">*</span>ptr <span class="op">=</span> <span class="nm">99</span><span class="op">;</span>          <span class="cm">// change the value through the pointer</span>
+cout <span class="op">&lt;&lt;</span> x<span class="op">;</span>          <span class="cm">// → 99  (x changed too — same memory!)</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>the two uses of * — don't confuse them</div>
+      <div class="code-block"><span class="ty">int</span><span class="op">*</span> ptr<span class="op">;</span>     <span class="cm">// * in declaration = "this is a pointer type"</span>
+<span class="op">*</span>ptr<span class="op">;</span>         <span class="cm">// * in expression  = "get the value at this address"</span></div>
+    </div>
+    <div class="note">⚠ Always initialise pointers. An uninitialised pointer points to a random address — using it is a <code>segfault</code> waiting to happen.</div>
+  </section>
+
+  <!-- NULLPTR -->
+  <section id="nullptr">
+    <div class="section-header">
+      <h2>nullptr</h2>
+      <span class="badge">Like Python's None</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>a pointer that intentionally points to nothing</div>
+      <div class="code-block"><span class="ty">int</span><span class="op">*</span> ptr <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span>     <span class="cm">// safe "empty" pointer — like None in Python</span>
+
+<span class="cm">// always check before using!</span>
+<span class="kw">if</span> <span class="op">(</span>ptr <span class="op">!=</span> <span class="kw">nullptr</span><span class="op">) {</span>
+    cout <span class="op">&lt;&lt; *</span>ptr<span class="op">;</span>
+<span class="op">}</span>
+
+<span class="cm">// or just:</span>
+<span class="kw">if</span> <span class="op">(</span>ptr<span class="op">) {</span> cout <span class="op">&lt;&lt; *</span>ptr<span class="op">; }</span>    <span class="cm">// nullptr is falsy, like None</span></div>
+    </div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section id="references">
+    <div class="section-header">
+      <h2>References</h2>
+      <span class="badge">Alias · Not a copy</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>type& — another name for the same variable</div>
+      <div class="code-block"><span class="ty">int</span>  x   <span class="op">=</span> <span class="nm">42</span><span class="op">;</span>
+<span class="ty">int</span><span class="op">&amp;</span> ref <span class="op">=</span> x<span class="op">;</span>        <span class="cm">// ref IS x — same memory, different name</span>
+
+ref <span class="op">=</span> <span class="nm">99</span><span class="op">;</span>
+cout <span class="op">&lt;&lt;</span> x<span class="op">;</span>           <span class="cm">// → 99  (changing ref changes x)</span>
+
+<span class="cm">// references must be initialised immediately — can't be null</span>
+<span class="cm">// references can't be reassigned to refer to something else</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>pointer vs reference</div>
+        <div class="code-block"><span class="cm">// Pointer</span>
+<span class="ty">int</span><span class="op">*</span> p <span class="op">= &amp;</span>x<span class="op">;</span>   <span class="cm">// can be null</span>
+<span class="op">*</span>p <span class="op">=</span> <span class="nm">5</span><span class="op">;</span>        <span class="cm">// needs *</span>
+p <span class="op">= &amp;</span>y<span class="op">;</span>        <span class="cm">// can point elsewhere</span>
+
+<span class="cm">// Reference</span>
+<span class="ty">int</span><span class="op">&amp;</span> r <span class="op">=</span> x<span class="op">;</span>    <span class="cm">// can't be null</span>
+r <span class="op">=</span> <span class="nm">5</span><span class="op">;</span>         <span class="cm">// no * needed</span>
+<span class="cm">// r = y would copy y into x</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>when to use each</div>
+        <div class="code-block"><span class="cm">// Use reference when:</span>
+<span class="cm">// — you just want an alias or</span>
+<span class="cm">//   to avoid copying in a function</span>
+
+<span class="ty">void</span> <span class="fn">print</span><span class="op">(</span><span class="kw">const</span> <span class="ty">string</span><span class="op">&amp;</span> s<span class="op">)</span> <span class="op">{}</span>
+
+<span class="cm">// Use pointer when:</span>
+<span class="cm">// — it can be null</span>
+<span class="cm">// — you need to change what</span>
+<span class="cm">//   it points to</span>
+<span class="cm">// — working with dynamic memory</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DYNAMIC MEMORY -->
+  <section id="dynamic">
+    <div class="section-header">
+      <h2>Dynamic Memory</h2>
+      <span class="badge">new · delete · heap</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>allocate and free manually</div>
+      <div class="code-block"><span class="cm">// allocate on the heap</span>
+<span class="ty">int</span><span class="op">*</span> p <span class="op">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="op">(</span><span class="nm">42</span><span class="op">);</span>        <span class="cm">// single value</span>
+<span class="ty">int</span><span class="op">*</span> arr <span class="op">=</span> <span class="kw">new</span> <span class="ty">int</span>[<span class="nm">10</span>]<span class="op">;</span>      <span class="cm">// array of 10 ints</span>
+
+cout <span class="op">&lt;&lt; *</span>p<span class="op">;</span>                   <span class="cm">// → 42</span>
+arr[<span class="nm">0</span>] <span class="op">=</span> <span class="nm">99</span><span class="op">;</span>
+
+<span class="cm">// ALWAYS free what you allocate</span>
+<span class="kw">delete</span> p<span class="op">;</span>                     <span class="cm">// free single value</span>
+<span class="kw">delete</span>[] arr<span class="op">;</span>                 <span class="cm">// free array — note the []</span>
+
+p   <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span>               <span class="cm">// good habit after delete</span>
+arr <span class="op">=</span> <span class="kw">nullptr</span><span class="op">;</span></div>
+    </div>
+    <div class="note">⚠ Forgetting <code>delete</code> = memory leak. Using a pointer after <code>delete</code> = undefined behaviour. This is why smart pointers exist.</div>
+  </section>
+
+  <!-- SMART POINTERS -->
+  <section id="smart">
+    <div class="section-header">
+      <h2>Smart Pointers</h2>
+      <span class="badge">C++11 · Auto-managed · Prefer these</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>#include &lt;memory&gt;</div>
+      <div class="code-block"><span class="kw">#include</span> <span class="st">&lt;memory&gt;</span>
+
+<span class="cm">// unique_ptr — one owner, auto-deleted when out of scope</span>
+<span class="kw">auto</span> p <span class="op">=</span> <span class="fn">make_unique</span><span class="op">&lt;</span><span class="ty">int</span><span class="op">&gt;(</span><span class="nm">42</span><span class="op">);</span>
+cout <span class="op">&lt;&lt; *</span>p<span class="op">;</span>                          <span class="cm">// → 42</span>
+<span class="cm">// no delete needed — freed automatically</span>
+
+<span class="cm">// shared_ptr — multiple owners, freed when last owner gone</span>
+<span class="kw">auto</span> s <span class="op">=</span> <span class="fn">make_shared</span><span class="op">&lt;</span><span class="ty">int</span><span class="op">&gt;(</span><span class="nm">99</span><span class="op">);</span>
+<span class="kw">auto</span> s2 <span class="op">=</span> s<span class="op">;</span>                        <span class="cm">// both point to same value</span>
+cout <span class="op">&lt;&lt;</span> s<span class="op">.</span><span class="fn">use_count</span><span class="op">();</span>              <span class="cm">// → 2 (two owners)</span></div>
+    </div>
+    <div class="tip">💡 In modern C++ you should almost never use raw <code>new</code>/<code>delete</code>. Use <code>make_unique</code> by default, <code>make_shared</code> when you need shared ownership.</div>
+  </section>
+
+  <!-- POINTER ARITHMETIC -->
+  <section id="arithmetic">
+    <div class="section-header">
+      <h2>Pointer Arithmetic</h2>
+      <span class="badge">Moving through memory</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>pointers can be incremented like indexes</div>
+      <div class="code-block"><span class="ty">int</span> arr[] <span class="op">= {</span><span class="nm">10</span><span class="op">,</span> <span class="nm">20</span><span class="op">,</span> <span class="nm">30</span><span class="op">,</span> <span class="nm">40</span><span class="op">};</span>
+<span class="ty">int</span><span class="op">*</span> p <span class="op">=</span> arr<span class="op">;</span>         <span class="cm">// points to arr[0]</span>
+
+cout <span class="op">&lt;&lt; *</span>p<span class="op">;</span>           <span class="cm">// → 10</span>
+p<span class="op">++;</span>
+cout <span class="op">&lt;&lt; *</span>p<span class="op">;</span>           <span class="cm">// → 20</span>
+p <span class="op">+=</span> <span class="nm">2</span><span class="op">;</span>
+cout <span class="op">&lt;&lt; *</span>p<span class="op">;</span>           <span class="cm">// → 40</span>
+
+<span class="cm">// arr[i] and *(arr + i) are identical</span>
+arr[<span class="nm">2</span>] <span class="op">==</span> <span class="op">*(</span>arr <span class="op">+</span> <span class="nm">2</span><span class="op">);</span>  <span class="cm">// true</span></div>
+    </div>
+  </section>
+
+  <!-- QUICK REF -->
+  <section id="ref">
+    <div class="section-header">
+      <h2>Symbols — Quick Reference</h2>
+      <span class="badge">The confusing ones</span>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding:0">
+        <table class="ref-table">
+          <thead><tr><th>Symbol</th><th>Context</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">int* p</td><td class="desc">Declaration</td><td class="desc">p is a pointer to int</td></tr>
+            <tr><td class="mono">*p</td><td class="desc">Expression</td><td class="desc">Value stored at address p (dereference)</td></tr>
+            <tr><td class="mono">&amp;x</td><td class="desc">Expression</td><td class="desc">Memory address of x</td></tr>
+            <tr><td class="mono">int&amp; r = x</td><td class="desc">Declaration</td><td class="desc">r is a reference (alias) to x</td></tr>
+            <tr><td class="mono">nullptr</td><td class="desc">Value</td><td class="desc">Pointer pointing to nothing (safe empty)</td></tr>
+            <tr><td class="mono">new int(5)</td><td class="desc">Expression</td><td class="desc">Allocate int on heap, value 5</td></tr>
+            <tr><td class="mono">delete p</td><td class="desc">Statement</td><td class="desc">Free heap memory at p</td></tr>
+            <tr><td class="mono">delete[] p</td><td class="desc">Statement</td><td class="desc">Free heap array at p</td></tr>
+            <tr><td class="mono">p-&gt;name</td><td class="desc">Expression</td><td class="desc">Access member via pointer (same as (*p).name)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet — Page 05: Pointers &amp; References &nbsp;|&nbsp;
+  <a href="04-arrays-strings.html">← Arrays &amp; Strings</a> &nbsp;|&nbsp;
+  <a href="06-oop.html">Next: OOP →</a>
+</footer>
+
+</body>
+</html>

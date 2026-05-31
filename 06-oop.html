@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Cheat Sheet — OOP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#222831; --surface:#2c313a; --surface2:#393E46;
+      --border:rgba(148,137,121,.2); --warm1:#948979; --warm2:#F0E8DA;
+      --text:#F0E8DA; --muted:#948979;
+      --kw:#e07b54; --ty:#7fb3c8; --st:#7eab72; --cm:#5e6a78; --fn:#d4a96a; --op:#948979;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.7; }
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(34,40,49,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; height: 54px; }
+    .nav-brand { font-size: 1rem; font-weight: 800; color: var(--warm2); text-decoration: none; letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--warm1); }
+    .nav-links { display: flex; gap: 0.2rem; list-style: none; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 4px; transition: all .2s; }
+    .nav-links a:hover { color: var(--warm2); background: var(--surface2); }
+    .nav-links a.active { color: var(--warm2); background: rgba(148,137,121,.15); }
+    .hero { max-width: 900px; margin: 0 auto; padding: 4rem 2rem 2rem; }
+    .hero-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--warm1); background: rgba(148,137,121,.1); border: 1px solid rgba(148,137,121,.25); padding: 0.2rem 0.7rem; border-radius: 99px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+    .hero h1 em { font-style: normal; color: var(--warm1); }
+    .hero p { color: var(--muted); font-size: 0.9rem; }
+    main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; flex-direction: column; gap: 2rem; }
+    section { opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+    section:nth-child(1){animation-delay:.05s} section:nth-child(2){animation-delay:.10s}
+    section:nth-child(3){animation-delay:.15s} section:nth-child(4){animation-delay:.20s}
+    section:nth-child(5){animation-delay:.25s} section:nth-child(6){animation-delay:.30s}
+    section:nth-child(7){animation-delay:.35s} section:nth-child(8){animation-delay:.40s}
+    section:nth-child(9){animation-delay:.45s}
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+    .section-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.75rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .section-header .badge { margin-left: auto; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); background: var(--surface2); padding: 0.15rem 0.5rem; border-radius: 4px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+    .card:hover { border-color: rgba(148,137,121,.4); }
+    .card-header { padding: 0.6rem 1.1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .card-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warm1); flex-shrink: 0; }
+    .code-block { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; padding: 1rem 1.2rem; overflow-x: auto; white-space: pre; color: var(--warm2); }
+    .kw { color: var(--kw); font-weight: 600; } .ty { color: var(--ty); } .st { color: var(--st); }
+    .nm { color: var(--fn); } .cm { color: var(--cm); font-style: italic; } .fn { color: var(--fn); } .op { color: var(--op); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+    .note { background: rgba(224,123,84,.07); border-left: 3px solid var(--kw); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #c47055; }
+    .tip  { background: rgba(126,171,114,.07); border-left: 3px solid var(--st); border-radius: 0 6px 6px 0; padding: 0.6rem 1rem; font-size: 0.83rem; color: #7eab72; }
+    .note code, .tip code { font-family: 'JetBrains Mono', monospace; font-size: 0.8em; background: rgba(0,0,0,.2); padding: 0.1em 0.35em; border-radius: 3px; }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    footer a { color: var(--warm2); text-decoration: none; }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="index.html">C<span>++</span> Cheat Sheet</a>
+  <ul class="nav-links">
+    <li><a href="00-keywords.html">Keywords</a></li>
+    <li><a href="01-basics.html">Basics</a></li>
+    <li><a href="02-control-flow.html">Control Flow</a></li>
+    <li><a href="03-functions.html">Functions</a></li>
+    <li><a href="04-arrays-strings.html">Arrays &amp; Strings</a></li>
+    <li><a href="05-pointers.html">Pointers</a></li>
+    <li><a href="06-oop.html" class="active">OOP</a></li>
+    <li><a href="07-stl.html">STL</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <span class="hero-tag">Page 06 / 07</span>
+  <h1>Object Oriented <em>Programming</em></h1>
+  <p>Classes, objects, constructors, inheritance. Same ideas as Python — stricter syntax, explicit access control.</p>
+</div>
+
+<main>
+
+  <!-- CLASS ANATOMY -->
+  <section id="class">
+    <div class="section-header">
+      <h2>Class — Basic Structure</h2>
+      <span class="badge">Blueprint for objects</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>declaration — goes in a .h file or above main()</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Dog</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>                        <span class="cm">// accessible from anywhere</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="ty">int</span>    age<span class="op">;</span>
+
+    <span class="ty">void</span> <span class="fn">bark</span><span class="op">() {</span>
+        cout <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">" says: Woof!\n"</span><span class="op">;</span>
+    <span class="op">}</span>
+
+<span class="kw">private</span><span class="op">:</span>                       <span class="cm">// accessible only inside the class</span>
+    <span class="ty">string</span> secret<span class="op">;</span>
+<span class="op">};</span>                              <span class="cm">// ← don't forget the semicolon!</span>
+
+<span class="cm">// create an object</span>
+<span class="ty">Dog</span> d<span class="op">;</span>
+d<span class="op">.</span>name <span class="op">=</span> <span class="st">"Rex"</span><span class="op">;</span>
+d<span class="op">.</span>age  <span class="op">=</span> <span class="nm">3</span><span class="op">;</span>
+d<span class="op">.</span><span class="fn">bark</span><span class="op">();</span>                      <span class="cm">// Rex says: Woof!</span>
+
+<span class="cm">// Python equiv:</span>
+<span class="cm">// class Dog:</span>
+<span class="cm">//     def bark(self): print(f"{self.name} says: Woof!")</span></div>
+    </div>
+    <div class="note">⚠ Class members are <code>private</code> by default. <code>struct</code> members are <code>public</code> by default. That's the only real difference between them.</div>
+  </section>
+
+  <!-- CONSTRUCTOR / DESTRUCTOR -->
+  <section id="constructor">
+    <div class="section-header">
+      <h2>Constructor &amp; Destructor</h2>
+      <span class="badge">__init__ &amp; __del__ equiv</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>same name as the class · no return type</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Dog</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="ty">int</span>    age<span class="op">;</span>
+
+    <span class="cm">// constructor — runs when object is created</span>
+    <span class="fn">Dog</span><span class="op">(</span><span class="ty">string</span> n<span class="op">,</span> <span class="ty">int</span> a<span class="op">) {</span>
+        name <span class="op">=</span> n<span class="op">;</span>
+        age  <span class="op">=</span> a<span class="op">;</span>
+    <span class="op">}</span>
+
+    <span class="cm">// destructor — runs when object is destroyed</span>
+    <span class="op">~</span><span class="fn">Dog</span><span class="op">() {</span>
+        cout <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">" is gone.\n"</span><span class="op">;</span>
+    <span class="op">}</span>
+
+    <span class="ty">void</span> <span class="fn">bark</span><span class="op">() {</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Woof!\n"</span><span class="op">; }</span>
+<span class="op">};</span>
+
+<span class="ty">Dog</span> d<span class="op">(</span><span class="st">"Rex"</span><span class="op">,</span> <span class="nm">3</span><span class="op">);</span>               <span class="cm">// constructor called</span>
+d<span class="op">.</span><span class="fn">bark</span><span class="op">();</span>
+<span class="cm">// destructor called automatically when d goes out of scope</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>initialiser list — cleaner constructor syntax</div>
+      <div class="code-block"><span class="fn">Dog</span><span class="op">(</span><span class="ty">string</span> n<span class="op">,</span> <span class="ty">int</span> a<span class="op">) :</span> name<span class="op">(</span>n<span class="op">),</span> age<span class="op">(</span>a<span class="op">) {}</span>
+<span class="cm">// preferred — initialises members directly instead of assigning</span></div>
+    </div>
+  </section>
+
+  <!-- ACCESS CONTROL -->
+  <section id="access">
+    <div class="section-header">
+      <h2>Access Control</h2>
+      <span class="badge">public · private · protected</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>getters &amp; setters — the standard pattern</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">BankAccount</span> <span class="op">{</span>
+<span class="kw">private</span><span class="op">:</span>
+    <span class="ty">double</span> balance<span class="op">;</span>              <span class="cm">// can't be touched from outside</span>
+
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">BankAccount</span><span class="op">(</span><span class="ty">double</span> b<span class="op">) :</span> balance<span class="op">(</span>b<span class="op">) {}</span>
+
+    <span class="ty">double</span> <span class="fn">getBalance</span><span class="op">()</span> <span class="kw">const</span> <span class="op">{</span> <span class="kw">return</span> balance<span class="op">; }</span>   <span class="cm">// getter</span>
+
+    <span class="ty">void</span> <span class="fn">deposit</span><span class="op">(</span><span class="ty">double</span> amount<span class="op">) {</span>                    <span class="cm">// setter/action</span>
+        <span class="kw">if</span> <span class="op">(</span>amount <span class="op">&gt;</span> <span class="nm">0</span><span class="op">)</span> balance <span class="op">+=</span> amount<span class="op">;</span>
+    <span class="op">}</span>
+<span class="op">};</span>
+
+<span class="ty">BankAccount</span> acc<span class="op">(</span><span class="nm">100.0</span><span class="op">);</span>
+acc<span class="op">.</span><span class="fn">deposit</span><span class="op">(</span><span class="nm">50</span><span class="op">);</span>
+cout <span class="op">&lt;&lt;</span> acc<span class="op">.</span><span class="fn">getBalance</span><span class="op">();</span>     <span class="cm">// → 150</span>
+<span class="cm">// acc.balance = -9999;  ← compile error! private</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>access levels</div>
+        <div class="code-block"><span class="kw">public</span><span class="op">:</span>
+  <span class="cm">// anyone can access</span>
+
+<span class="kw">private</span><span class="op">:</span>
+  <span class="cm">// only this class</span>
+
+<span class="kw">protected</span><span class="op">:</span>
+  <span class="cm">// this class +</span>
+  <span class="cm">// subclasses</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span>const method</div>
+        <div class="code-block"><span class="cm">// const after () means</span>
+<span class="cm">// "won't modify the object"</span>
+
+<span class="ty">double</span> <span class="fn">getBalance</span><span class="op">()</span> <span class="kw">const</span> <span class="op">{</span>
+    <span class="kw">return</span> balance<span class="op">;</span>
+<span class="op">}</span>
+
+<span class="cm">// good habit for all getters</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATIC -->
+  <section id="static">
+    <div class="section-header">
+      <h2>Static Members</h2>
+      <span class="badge">Shared across all instances</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>belongs to the class, not the object</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Counter</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="kw">static</span> <span class="ty">int</span> count<span class="op">;</span>           <span class="cm">// shared by all instances</span>
+    <span class="fn">Counter</span><span class="op">() {</span> count<span class="op">++; }</span>
+<span class="op">};</span>
+
+<span class="ty">int</span> <span class="ty">Counter</span><span class="op">::</span>count <span class="op">=</span> <span class="nm">0</span><span class="op">;</span>       <span class="cm">// must define outside class</span>
+
+<span class="ty">Counter</span> a<span class="op">,</span> b<span class="op">,</span> c<span class="op">;</span>
+cout <span class="op">&lt;&lt;</span> <span class="ty">Counter</span><span class="op">::</span>count<span class="op">;</span>       <span class="cm">// → 3</span>
+
+<span class="cm">// Python equiv: class variable (not self.x, just x at class level)</span></div>
+    </div>
+  </section>
+
+  <!-- INHERITANCE -->
+  <section id="inheritance">
+    <div class="section-header">
+      <h2>Inheritance</h2>
+      <span class="badge">Like Python's class B(A)</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>class Child : public Parent</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Animal</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">string</span> name<span class="op">;</span>
+    <span class="fn">Animal</span><span class="op">(</span><span class="ty">string</span> n<span class="op">) :</span> name<span class="op">(</span>n<span class="op">) {}</span>
+    <span class="ty">void</span> <span class="fn">eat</span><span class="op">() {</span> cout <span class="op">&lt;&lt;</span> name <span class="op">&lt;&lt;</span> <span class="st">" is eating.\n"</span><span class="op">; }</span>
+<span class="op">};</span>
+
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="op">:</span> <span class="kw">public</span> <span class="ty">Animal</span> <span class="op">{</span>    <span class="cm">// Dog inherits Animal</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">Dog</span><span class="op">(</span><span class="ty">string</span> n<span class="op">) :</span> <span class="fn">Animal</span><span class="op">(</span>n<span class="op">) {}</span>  <span class="cm">// call parent constructor</span>
+    <span class="ty">void</span> <span class="fn">bark</span><span class="op">() {</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Woof!\n"</span><span class="op">; }</span>
+<span class="op">};</span>
+
+<span class="ty">Dog</span> d<span class="op">(</span><span class="st">"Rex"</span><span class="op">);</span>
+d<span class="op">.</span><span class="fn">eat</span><span class="op">();</span>     <span class="cm">// inherited from Animal</span>
+d<span class="op">.</span><span class="fn">bark</span><span class="op">();</span>    <span class="cm">// Dog's own method</span>
+
+<span class="cm">// Python equiv:</span>
+<span class="cm">// class Dog(Animal):</span>
+<span class="cm">//     def __init__(self, n): super().__init__(n)</span></div>
+    </div>
+  </section>
+
+  <!-- VIRTUAL / POLYMORPHISM -->
+  <section id="virtual">
+    <div class="section-header">
+      <h2>virtual &amp; Polymorphism</h2>
+      <span class="badge">Override parent behaviour</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>virtual lets subclasses override a method</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Animal</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="kw">virtual</span> <span class="ty">void</span> <span class="fn">speak</span><span class="op">() {</span>       <span class="cm">// virtual = can be overridden</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"...\n"</span><span class="op">;</span>
+    <span class="op">}</span>
+<span class="op">};</span>
+
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="op">:</span> <span class="kw">public</span> <span class="ty">Animal</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">void</span> <span class="fn">speak</span><span class="op">()</span> <span class="kw">override</span> <span class="op">{</span>    <span class="cm">// override keyword confirms intent</span>
+        cout <span class="op">&lt;&lt;</span> <span class="st">"Woof!\n"</span><span class="op">;</span>
+    <span class="op">}</span>
+<span class="op">};</span>
+
+<span class="kw">class</span> <span class="ty">Cat</span> <span class="op">:</span> <span class="kw">public</span> <span class="ty">Animal</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="ty">void</span> <span class="fn">speak</span><span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> cout <span class="op">&lt;&lt;</span> <span class="st">"Meow!\n"</span><span class="op">; }</span>
+<span class="op">};</span>
+
+<span class="cm">// polymorphism — same call, different behaviour</span>
+<span class="ty">Animal</span><span class="op">*</span> a1 <span class="op">=</span> <span class="kw">new</span> <span class="ty">Dog</span><span class="op">();</span>
+<span class="ty">Animal</span><span class="op">*</span> a2 <span class="op">=</span> <span class="kw">new</span> <span class="ty">Cat</span><span class="op">();</span>
+a1<span class="op">-&gt;</span><span class="fn">speak</span><span class="op">();</span>    <span class="cm">// Woof!</span>
+a2<span class="op">-&gt;</span><span class="fn">speak</span><span class="op">();</span>    <span class="cm">// Meow!</span></div>
+    </div>
+    <div class="tip">💡 Always add a <code>virtual ~Animal() {}</code> destructor to base classes that use virtual methods — otherwise destroying a derived object via base pointer leaks memory.</div>
+  </section>
+
+  <!-- ABSTRACT CLASS -->
+  <section id="abstract">
+    <div class="section-header">
+      <h2>Abstract Class</h2>
+      <span class="badge">Pure virtual · Can't be instantiated</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>= 0 makes a method pure virtual</div>
+      <div class="code-block"><span class="kw">class</span> <span class="ty">Shape</span> <span class="op">{</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="kw">virtual</span> <span class="ty">double</span> <span class="fn">area</span><span class="op">() =</span> <span class="nm">0</span><span class="op">;</span>   <span class="cm">// pure virtual — subclass MUST implement</span>
+    <span class="kw">virtual</span> <span class="op">~</span><span class="fn">Shape</span><span class="op">() {}</span>
+<span class="op">};</span>
+
+<span class="kw">class</span> <span class="ty">Circle</span> <span class="op">:</span> <span class="kw">public</span> <span class="ty">Shape</span> <span class="op">{</span>
+    <span class="ty">double</span> r<span class="op">;</span>
+<span class="kw">public</span><span class="op">:</span>
+    <span class="fn">Circle</span><span class="op">(</span><span class="ty">double</span> r<span class="op">) :</span> r<span class="op">(</span>r<span class="op">) {}</span>
+    <span class="ty">double</span> <span class="fn">area</span><span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> <span class="kw">return</span> <span class="nm">3.14159</span> <span class="op">*</span> r <span class="op">*</span> r<span class="op">; }</span>
+<span class="op">};</span>
+
+<span class="cm">// Shape s;  ← compile error! can't create abstract class</span>
+<span class="ty">Circle</span> c<span class="op">(</span><span class="nm">5</span><span class="op">);</span>
+cout <span class="op">&lt;&lt;</span> c<span class="op">.</span><span class="fn">area</span><span class="op">();</span>   <span class="cm">// → 78.5397</span>
+
+<span class="cm">// Python equiv: ABC + @abstractmethod</span></div>
+    </div>
+  </section>
+
+  <!-- STRUCT -->
+  <section id="struct">
+    <div class="section-header">
+      <h2>struct</h2>
+      <span class="badge">Like a class but public by default</span>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span>used for simple data grouping</div>
+      <div class="code-block"><span class="kw">struct</span> <span class="ty">Point</span> <span class="op">{</span>
+    <span class="ty">double</span> x<span class="op">,</span> y<span class="op">;</span>              <span class="cm">// public by default</span>
+<span class="op">};</span>
+
+<span class="ty">Point</span> p <span class="op">= {</span><span class="nm">3.0</span><span class="op">,</span> <span class="nm">4.0</span><span class="op">};</span>
+cout <span class="op">&lt;&lt;</span> p<span class="op">.</span>x <span class="op">&lt;&lt;</span> <span class="st">", "</span> <span class="op">&lt;&lt;</span> p<span class="op">.</span>y<span class="op">;</span>   <span class="cm">// 3.0, 4.0</span>
+
+<span class="cm">// Python equiv: dataclass or namedtuple</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  C++ Cheat Sheet — Page 06: OOP &nbsp;|&nbsp;
+  <a href="05-pointers.html">← Pointers</a> &nbsp;|&nbsp;
+  <a href="07-stl.html">Next: STL →</a>
+</footer>
+</body>
+</html>
